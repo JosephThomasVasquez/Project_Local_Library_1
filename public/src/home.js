@@ -12,7 +12,7 @@ function getTotalAccountsCount(accounts) {
 
 function getBooksBorrowedCount(books) {
   let borrowing = [];
-// Loop through books array and check first index of borrows array is not returned then push borrows to borrowing array 
+  // Loop through books array and check first index of borrows array is not returned then push borrows to borrowing array
   books.forEach(({ borrows }) =>
     !borrows[0].returned ? borrowing.push(borrows) : null
   );
@@ -41,7 +41,6 @@ function getMostCommonGenres(books) {
 }
 
 function getMostPopularBooks(books) {
-  
   // Transform books to object with name of title and count of how many borrows
   let bookCounts = books.map((book) => {
     const { title, borrows } = book;
@@ -56,22 +55,27 @@ function getMostPopularBooks(books) {
   return bookCounts.splice(0, 5);
 }
 
+// Helper function to filter books author id to match author id and set count to the books borrows length
+const filterBooks = (books, author) => {
+  // Destructure author keys
+  const { id, name } = author;
+  const { first, last } = name;
+
+  // Create new object model with name containing author first and last name as template literal and default count as 0
+  let authorDetails = { name: `${first} ${last}`, count: 0 };
+
+  books.filter((book) =>
+    book.authorId === id ? (authorDetails.count += book.borrows.length) : null
+  );
+  // Return new object with name and count
+  return authorDetails;
+};
+
 function getMostPopularAuthors(books, authors) {
-
-  // Accumulate authors and transform author with name of author's first and last name, and count of borrows
+  // Accumulate authors
   let authorsReduce = authors.reduce((acc, author) => {
-    const { id, name } = author;
-    const { first, last } = name;
-
-    let authorDetails = { name: `${first} ${last}`, count: 0 };
-
-    // Filter books author id to match author id and set count to the books borrows length
-    books.filter((book) =>
-      book.authorId === id ? (authorDetails.count += book.borrows.length) : null
-    );
     // Push the author object to the accumulator array
-    acc.push(authorDetails);
-
+    acc.push(filterBooks(books, author));
     return acc;
   }, []);
 
