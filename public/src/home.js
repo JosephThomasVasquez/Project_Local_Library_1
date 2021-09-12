@@ -1,5 +1,5 @@
 const common = require("mocha/lib/interfaces/common");
-
+// Completed
 function getTotalBooksCount(books) {
   // Return total leng of book array
   return books.length;
